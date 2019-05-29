@@ -41,8 +41,8 @@ if (WEBPACK_TARGET === 'web') {
       },
       plugins: [
         new EndWebpackPlugin(() => {
-          const { dependencies } = require('./package.json')
-          require('fs').writeFileSync('./dist/package.json', JSON.stringify({ dependencies, main: 'server' }))
+          const { engines, dependencies } = require('./package.json')
+          require('fs').writeFileSync('./dist/package.json', JSON.stringify({ engines, dependencies, main: 'server' }))
         })
       ]
     }

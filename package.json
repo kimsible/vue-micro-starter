@@ -1,6 +1,9 @@
 {
   "name": "mushop",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=12.3.1"
+  },
   "private": true,
   "scripts": {
     "build": "npm run build:server:main -- --silent && npm run build:server -- --no-clean --silent && npm run build:client -- --no-clean --silent",
