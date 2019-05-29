@@ -1,5 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
+import { createRouter } from './router'
 
-const app = new Vue({ render: h => h(App) })
-app.$mount('#app')
+export function createApp () {
+  const router = createRouter()
+
+  const vm = new Vue({
+    router,
+    render: h => h(App)
+  })
+
+  return { vm, router }
+}

@@ -3,22 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "npm run build:server:main -- --silent && npm run build:server -- --no-clean --silent && npm run build:client -- --no-clean --silent",
+    "build:client": "WEBPACK_TARGET=web vue-cli-service build",
+    "build:server": "WEBPACK_TARGET=node vue-cli-service build",
+    "build:server:main": "WEBPACK_TARGET=node NODE_MAIN=1 vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "start": "cd dist && node ."
   },
   "dependencies": {
-    "vue": "^2.6.10"
+    "mime-types": "^2.1.24",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vue-server-renderer": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-service": "^3.8.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
+    "end-webpack-plugin": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^8.1.5",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack-node-externals": "^1.7.2"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
