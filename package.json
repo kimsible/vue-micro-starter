@@ -10,6 +10,7 @@
     "build:client": "WEBPACK_TARGET=web vue-cli-service build",
     "build:server": "WEBPACK_TARGET=node vue-cli-service build",
     "build:server:main": "WEBPACK_TARGET=node NODE_MAIN=1 vue-cli-service build",
+    "build:test": "node src/server/__tests__/helpers/build-test",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",

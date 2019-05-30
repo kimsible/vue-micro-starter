@@ -1,0 +1,18 @@
+{
+  "publicPath": "",
+  "all": [
+    "main.js"
+  ],
+  "initial": [
+    "main.js"
+  ],
+  "async": [],
+  "modules": {
+    "65951f5f": [
+      0
+    ],
+    "5ae6cb02": [
+      0
+    ]
+  }
+}
