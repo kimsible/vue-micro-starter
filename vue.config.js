@@ -2,63 +2,28 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const nodeExternals = require('webpack-node-externals')
 const EndWebpackPlugin = require('end-webpack-plugin')
+const { DefinePlugin } = require('webpack')
 
-const { WEBPACK_TARGET, NODE_MAIN, NODE_ENV } = process.env
+const { NODE_ENV } = process.env
 
-let configureWebpack
-
-if (WEBPACK_TARGET === 'web') {
-  configureWebpack = {
-    entry: './src/entry-client',
-    target: 'web',
-    node: false,
-    plugins: [
-      new VueSSRClientPlugin()
-    ]
-  }
-} else if (WEBPACK_TARGET === 'node') {
-  configureWebpack = {
-    entry: './src/entry-server',
-    target: 'node',
-    plugins: [
-      new VueSSRServerPlugin()
-    ],
-    externals: nodeExternals({
-      whitelist: /\.css$/
-    }),
-    output: {
-      libraryTarget: 'commonjs2'
+module.exports = {
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
     }
-  }
+  },
+  css: {
+    extract: NODE_ENV === 'production'
+  },
+  chainWebpack: config => {
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap(options => ({
+        ...options,
+        optimizeSSR: false
+      }))
 
-  if (NODE_MAIN) {
-    configureWebpack = {
-      ...configureWebpack,
-      devtool: false,
-      entry: './src/server',
-      output: {
-        filename: 'server.js'
-      },
-      plugins: [
-        new EndWebpackPlugin(() => {
-          const { engines, dependencies } = require('./package.json')
-          require('fs').writeFileSync('./dist/package.json', JSON.stringify({ engines, dependencies, main: 'server' }))
-        })
-      ]
-    }
-  }
-}
-
-const chainWebpack = config => {
-  config.module
-    .rule('vue')
-    .use('vue-loader')
-    .tap(options => ({
-      ...options,
-      optimizeSSR: false
-    }))
-
-  if (WEBPACK_TARGET === 'web') {
     config
       .plugin('html')
       .tap(args => {
@@ -75,27 +40,71 @@ const chainWebpack = config => {
         }
         return args
       })
-  }
+  },
+  pluginOptions: {
+    configureMultiCompilerWebpack: config => {
+      const serverRunConfig = {
+        ...config,
+        entry: './src/server',
+        target: 'node',
+        plugins: [
+          ...config.plugins.filter(plugin => !(plugin instanceof DefinePlugin)),
+          new EndWebpackPlugin(() => {
+            const { engines, dependencies } = require('./package.json')
+            require('fs').writeFileSync('./dist/package.json', JSON.stringify({ engines, dependencies, main: 'server' }))
+          })
+        ],
+        optimization: {
+          ...config.optimization,
+          splitChunks: undefined
+        },
+        externals: nodeExternals({
+          whitelist: /\.css$/
+        }),
+        output: {
+          ...config.output,
+          libraryTarget: 'commonjs2',
+          filename: 'server.js'
+        },
+        devtool: false
+      }
 
-  if (NODE_MAIN) {
-    config.plugins.delete('define')
-  }
-}
+      const serverConfig = {
+        ...config,
+        entry: './src/entry-server',
+        target: 'node',
+        plugins: [
+          ...config.plugins,
+          new VueSSRServerPlugin()
+        ],
+        optimization: {
+          ...config.optimization,
+          splitChunks: undefined
+        },
+        externals: nodeExternals({
+          whitelist: /\.css$/
+        }),
+        output: {
+          ...config.output,
+          libraryTarget: 'commonjs2'
+        }
+      }
 
-module.exports = {
-  devServer: {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
+      const clientConfig = {
+        ...config,
+        entry: './src/entry-client',
+        target: 'web',
+        plugins: [
+          ...config.plugins,
+          new VueSSRClientPlugin()
+        ],
+        optimization: {
+          ...config.optimization,
+          splitChunks: undefined
+        },
+        node: false
+      }
+      return [serverRunConfig, serverConfig, clientConfig]
     }
-  },
-  css: {
-    extract: NODE_ENV === 'production'
-  },
-  configureWebpack: {
-    ...configureWebpack,
-    optimization: {
-      splitChunks: undefined
-    }
-  },
-  chainWebpack
+  }
 }
