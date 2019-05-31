@@ -1,18 +1,24 @@
-import { readFileSync } from 'fs'
+import { promises as fs } from 'fs'
 import { createBundleRenderer } from 'vue-server-renderer'
 
-const dist = process.env.CWD || process.cwd()
-const serverBundle = JSON.parse(readFileSync(dist + '/vue-ssr-server-bundle.json'))
-const clientManifest = JSON.parse(readFileSync(dist + '/vue-ssr-client-manifest.json'))
-const template = readFileSync(dist + '/index.html', 'utf8')
-const renderer = createBundleRenderer(serverBundle, {
-  clientManifest,
-  template,
-  runInNewContext: false
-})
+export default async dist => {
+  const files = [
+    fs.readFile(dist + '/vue-ssr-server-bundle.json').then(data => JSON.parse(data)),
+    fs.readFile(dist + '/vue-ssr-client-manifest.json').then(data => JSON.parse(data)),
+    fs.readFile(dist + '/index.html', 'utf8')
+  ]
 
-export default async url => {
-  const context = { url }
-  const html = await renderer.renderToString(context)
-  return { html, HTTPStatus: context.HTTPStatus }
+  const [serverBundle, clientManifest, template] = await Promise.all(files)
+
+  const renderer = createBundleRenderer(serverBundle, {
+    clientManifest,
+    template,
+    runInNewContext: false
+  })
+
+  return async url => {
+    const context = { url }
+    const html = await renderer.renderToString(context)
+    return { html, HTTPStatus: context.HTTPStatus }
+  }
 }
