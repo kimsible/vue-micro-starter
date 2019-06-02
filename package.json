@@ -7,10 +7,10 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
-    "build:test": "node src/server/__tests__/helpers/build-test",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",
+    "test:build:server": "BUILD_SERVER=true BUILD_CLIENT=true CWD=src/server/__tests__/fixtures node scripts/test:build",
     "start": "cd dist && node ."
   },
   "dependencies": {
@@ -39,7 +39,6 @@
   "lint-staged": {
     "*.{js,vue}": [
       "vue-cli-service lint",
-      "ava",
       "git add"
     ]
   },
@@ -48,6 +47,16 @@
       "esm"
     ],
     "babel": false,
-    "compileEnhancements": false
+    "compileEnhancements": false,
+    "helpers": [
+      "**/__tests__/helpers/**/*"
+    ],
+    "files": [
+      "**/__tests__/**/*",
+      "!**/__tests__/fixtures/**/*"
+    ],
+    "sources": [
+      "**/src/**/*"
+    ]
   }
 }
