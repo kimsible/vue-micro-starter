@@ -1,12 +1,22 @@
 import { createServer } from 'http'
+import { createTransport } from './mail'
 import open, { createStatic } from './open'
 import render, { createRenderer } from './render'
 
 run()
 
 async function run () {
-  await createRenderer(process.cwd())
-  createStatic(process.cwd())
+  const init = [
+    createTransport(process.env.SMTP),
+    createRenderer(process.cwd()),
+    createStatic(process.cwd())
+  ]
+
+  try {
+    await Promise.all(init)
+  } catch (err) {
+    process.stdout.write(err + '\n')
+  }
 
   const server = createServer(async (req, res) => {
     const { method } = req
