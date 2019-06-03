@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",
-    "test:build:server": "BUILD_SERVER=true BUILD_CLIENT=true CWD=src/server/__tests__/fixtures node scripts/test:build",
+    "test:build:server": "BUILD_SERVER=true BUILD_CLIENT=true CWD=test/fixtures node scripts/test:build",
     "start": "cd dist && node ."
   },
   "dependencies": {
@@ -34,7 +34,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "gitHooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "pre-push": "ava"
   },
   "lint-staged": {
     "*.{js,vue}": [
@@ -52,11 +53,11 @@
     "failFast": false,
     "failWithoutAssertions": false,
     "helpers": [
-      "**/__tests__/helpers/**/*"
+      "**/helpers/**/*"
     ],
     "files": [
-      "**/__tests__/**/*",
-      "!**/__tests__/fixtures/**/*"
+      "test/**/*",
+      "!test/fixtures"
     ],
     "sources": [
       "src/**/*"
