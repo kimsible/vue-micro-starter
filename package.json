@@ -7,10 +7,10 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
+    "build:fixtures": "node scripts/build:fixtures",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",
-    "test:build:server": "BUILD_SERVER=true BUILD_CLIENT=true CWD=test/fixtures node scripts/test:build",
     "start": "cd dist && node ."
   },
   "dependencies": {
@@ -29,6 +29,8 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^8.1.5",
+    "memory-fs": "^0.4.1",
+    "mock-fs": "^4.10.0",
     "vue-cli-plugin-multi-compiler": "^0.1.0",
     "vue-template-compiler": "^2.6.10",
     "webpack-node-externals": "^1.7.2"

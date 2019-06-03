@@ -3,12 +3,12 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { resolve } = require('path')
 
-const cwd = resolve(process.cwd(), process.env.CWD)
+const cwd = resolve(process.cwd(), 'test/fixtures')
 
 run()
 
-async function run ({ server, client } = { server: process.env.BUILD_SERVER, client: process.env.BUILD_CLIENT }) {
-  await Promise.all([server && buildServer(), client && buildClient()])
+async function run () {
+  await Promise.all([buildServer(), buildClient()])
 }
 
 function buildClient () {

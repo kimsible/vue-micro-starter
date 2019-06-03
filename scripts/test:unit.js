@@ -13,7 +13,7 @@ exec(`ava ${files.join(' ')}`, (err, stdout) => {
     process.stdout.write(stdout + '\n')
   }
   if (err) {
-    if (!stdout.match(/✖ Couldn't find any matching tests/)) {
+    if (!stdout.match(/✖ Couldn't find any (matching tests|files to test)/)) {
       process.exit(1)
     }
   }
