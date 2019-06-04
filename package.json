@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
-    "build:test": "node src/server/__tests__/helpers/build-test",
+    "build:test": "node test/helpers/build",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",
@@ -23,7 +23,7 @@
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-service": "^3.8.0",
     "@vue/eslint-config-standard": "^4.0.0",
-    "ava": "^1.4.1",
+    "ava": "^2.0.0",
     "babel-eslint": "^10.0.1",
     "end-webpack-plugin": "^4.0.0",
     "eslint": "^5.16.0",
@@ -34,20 +34,14 @@
     "webpack-node-externals": "^1.7.2"
   },
   "gitHooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "pre-push": "ava"
   },
   "lint-staged": {
     "*.{js,vue}": [
       "vue-cli-service lint",
-      "ava",
-      "git add"
+      "git add",
+      "node test/helpers/unit"
     ]
-  },
-  "ava": {
-    "require": [
-      "esm"
-    ],
-    "babel": false,
-    "compileEnhancements": false
   }
 }

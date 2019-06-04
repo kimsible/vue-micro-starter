@@ -2,7 +2,7 @@ import test from 'ava'
 import { resolve } from 'path'
 import render from '../render'
 
-const cwd = resolve(__dirname, './fixtures')
+const cwd = resolve(process.cwd(), 'test/fixtures')
 
 test('render', testRender, '/404.html')
 

@@ -3,7 +3,7 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const { resolve } = require('path')
 
-const cwd = resolve(__dirname, '../fixtures')
+const cwd = resolve(process.cwd(), 'test/fixtures')
 
 run()
 
@@ -13,6 +13,7 @@ async function run () {
 
 function buildClient () {
   const compiler = webpack({
+    mode: 'production',
     entry: cwd + '/app.js',
     target: 'web',
     externals: ['vue'],
@@ -28,6 +29,7 @@ function buildClient () {
 
 function buildServer () {
   const compiler = webpack({
+    mode: 'production',
     entry: cwd + '/app.js',
     target: 'node',
     externals: ['vue'],
@@ -44,12 +46,14 @@ function buildServer () {
 
 function compile (compiler) {
   return new Promise((resolve, reject) => {
-    compiler.run(err => {
+    compiler.run((err, stats) => {
       if (err) {
         reject(err)
         return
       }
-      resolve()
+      resolve(stats.toString({ colors: true }))
     })
   })
+    .then(info => process.stdout.write(info))
+    .catch(err => process.stdout.write(err.stack))
 }
