@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
-    "build:fixtures": "node scripts/build:fixtures",
+    "build:test": "node test/helpers/build",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
     "test": "ava",
@@ -41,7 +41,7 @@
     "*.{js,vue}": [
       "vue-cli-service lint",
       "git add",
-      "node scripts/test:unit"
+      "node test/helpers/unit"
     ]
   },
   "ava": {
