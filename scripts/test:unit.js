@@ -7,14 +7,15 @@ const files = process.argv.splice(2).reduce((acc, value) => ([
   basename(value, extname(value)) + '*'
 ]), [])
 
-process.stdout.write(files.join(' ') + '\n')
-exec(`ava ${files.join(' ')}`, (err, stdout) => {
-  if (stdout) {
-    process.stdout.write(stdout + '\n')
-  }
-  if (err) {
-    if (!stdout.match(/✖ Couldn't find any (matching tests|files to test)/)) {
-      process.exit(1)
+if (files.length > 0) {
+  exec(`ava ${files.join(' ')}`, (err, stdout) => {
+    if (stdout) {
+      process.stdout.write(stdout + '\n')
     }
-  }
-})
+    if (err) {
+      if (!stdout.match(/✖ Couldn't find any (matching tests|files to test)/)) {
+        process.exit(1)
+      }
+    }
+  })
+}
