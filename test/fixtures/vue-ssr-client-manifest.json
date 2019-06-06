@@ -1,10 +1,10 @@
 {
   "publicPath": "",
   "all": [
-    "main.js"
+    "js/main.js"
   ],
   "initial": [
-    "main.js"
+    "js/main.js"
   ],
   "async": [],
   "modules": {

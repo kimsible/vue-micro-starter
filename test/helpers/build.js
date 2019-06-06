@@ -18,7 +18,8 @@ function buildClient () {
     target: 'web',
     externals: ['vue'],
     output: {
-      path: cwd
+      path: cwd,
+      filename: 'js/[name].js'
     },
     plugins: [
       new VueSSRClientPlugin()

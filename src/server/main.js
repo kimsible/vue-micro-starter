@@ -1,5 +1,5 @@
 import { createServer } from 'http'
-import open from './open'
+import open, { createStatic } from './open'
 import render, { createRenderer } from './render'
 
 const { PORT } = process.env
@@ -12,6 +12,7 @@ run()
 
 async function run () {
   await createRenderer(process.cwd())
+  createStatic(process.cwd())
 
   createServer(async (req, res) => {
     const { url, method } = req
