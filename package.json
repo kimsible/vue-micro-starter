@@ -10,8 +10,7 @@
     "build:test": "node test/helpers/build",
     "lint": "vue-cli-service lint --no-fix",
     "serve": "vue-cli-service serve",
-    "test": "ava",
-    "start": "cd dist && node ."
+    "test": "ava"
   },
   "dependencies": {
     "esm": "^3.2.25",
