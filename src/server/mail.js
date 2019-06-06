@@ -1,16 +1,14 @@
 import nodemailer from 'nodemailer'
-import { hostname } from 'os'
 
 let transporter, user
 
-export default async envelope => transporter.sendMail({ from: user, to: user, ...envelope })
+export default async message => transporter.sendMail({ from: user, to: user, ...message })
 
 export async function createTransport (smtp) {
   const options = extractOptions(smtp)
   user = options.user
   transporter = nodemailer.createTransport(options.connection)
   await transporter.verify()
-  await transporter.sendMail({ from: user, to: `to@${hostname()}.verify` })
 }
 
 export function extractOptions (smtp) {
