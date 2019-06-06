@@ -14,6 +14,7 @@
     "start": "cd dist && node ."
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "mime-types": "^2.1.24",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
