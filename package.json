@@ -26,6 +26,7 @@
     "@vue/eslint-config-standard": "^4.0.0",
     "ava": "^2.0.0",
     "babel-eslint": "^10.0.1",
+    "copy-webpack-plugin": "^5.0.3",
     "end-webpack-plugin": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",

@@ -2,7 +2,7 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const nodeExternals = require('webpack-node-externals')
 const EndWebpackPlugin = require('end-webpack-plugin')
-const { DefinePlugin } = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const { NODE_ENV } = process.env
 
@@ -42,69 +42,42 @@ module.exports = {
       })
   },
   pluginOptions: {
-    configureMultiCompilerWebpack: config => {
-      const serverRunConfig = {
-        ...config,
-        entry: './src/server',
-        target: 'node',
-        plugins: [
-          ...config.plugins.filter(plugin => !(plugin instanceof DefinePlugin)),
-          new EndWebpackPlugin(() => {
-            const { engines, dependencies } = require('./package.json')
-            require('fs').writeFileSync('./dist/package.json', JSON.stringify({ engines, dependencies, main: 'server' }))
-          })
-        ],
-        optimization: {
-          ...config.optimization,
-          splitChunks: undefined
-        },
-        externals: nodeExternals({
-          whitelist: /\.css$/
-        }),
-        output: {
-          ...config.output,
-          libraryTarget: 'commonjs2',
-          filename: 'server.js'
-        },
-        devtool: false
+    configureMultiCompilerWebpack: [{
+      entry: './src/entry-server',
+      target: 'node',
+      plugins: [
+        new VueSSRServerPlugin(),
+        new CopyWebpackPlugin([
+          {
+            from: '*.js',
+            to: 'server/',
+            context: 'src/server'
+          }
+        ]),
+        new EndWebpackPlugin(() => {
+          const { engines, dependencies } = require('./package.json')
+          require('fs').writeFileSync('./dist/package.json', JSON.stringify({ engines, type: 'module', dependencies, main: 'server' }))
+        })
+      ],
+      optimization: {
+        splitChunks: undefined
+      },
+      externals: nodeExternals({
+        whitelist: /\.css$/
+      }),
+      output: {
+        libraryTarget: 'commonjs2'
       }
-
-      const serverConfig = {
-        ...config,
-        entry: './src/entry-server',
-        target: 'node',
-        plugins: [
-          ...config.plugins,
-          new VueSSRServerPlugin()
-        ],
-        optimization: {
-          ...config.optimization,
-          splitChunks: undefined
-        },
-        externals: nodeExternals({
-          whitelist: /\.css$/
-        }),
-        output: {
-          ...config.output,
-          libraryTarget: 'commonjs2'
-        }
-      }
-
-      const clientConfig = {
-        ...config,
-        entry: './src/entry-client',
-        target: 'web',
-        plugins: [
-          ...config.plugins,
-          new VueSSRClientPlugin()
-        ],
-        optimization: {
-          ...config.optimization,
-          splitChunks: undefined
-        },
-        node: false
-      }
-      return [serverRunConfig, serverConfig, clientConfig]
-    }
+    }, {
+      entry: './src/entry-client',
+      target: 'web',
+      plugins: [
+        new VueSSRClientPlugin()
+      ],
+      optimization: {
+        splitChunks: undefined
+      },
+      node: false
+    }]
   }
 }
