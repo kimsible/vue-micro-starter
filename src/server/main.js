@@ -1,6 +1,6 @@
 import { createServer } from 'http'
 import open from './open'
-import render from './render'
+import render, { createRenderer } from './render'
 
 const { PORT } = process.env
 if (!PORT) {
@@ -8,12 +8,10 @@ if (!PORT) {
   process.exit()
 }
 
-const cwd = process.env.CWD || process.cwd()
-
 run()
 
 async function run () {
-  const renderHTML = await render(cwd)
+  await createRenderer(process.cwd())
 
   createServer(async (req, res) => {
     const { url, method } = req
@@ -28,7 +26,7 @@ async function run () {
         res.writeHead(200, { contentType }).end(data)
         return
       }
-      const { html, HTTPStatus } = await renderHTML(url)
+      const { html, HTTPStatus } = await render(req)
       const contentType = 'text/html; charset=UTF-8'
       res.writeHead(HTTPStatus || 200, { contentType }).end(html)
     } catch (err) {

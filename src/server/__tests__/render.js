@@ -1,14 +1,12 @@
 import test from 'ava'
 import { resolve } from 'path'
-import render from '../render'
+import render, { createRenderer } from '../render'
 
-const cwd = resolve(process.cwd(), 'test/fixtures')
+test('render', renderTest, '/404.html')
 
-test('render', testRender, '/404.html')
-
-async function testRender (t, input) {
-  const renderHTML = await render(cwd)
-  const { html, HTTPStatus } = await renderHTML(input)
+async function renderTest (t, input) {
+  await createRenderer(resolve(__dirname, '../../../test/fixtures'))
+  const { html, HTTPStatus } = await render({ url: input })
   t.is(HTTPStatus, 404)
   t.regex(html, new RegExp(input))
 }
