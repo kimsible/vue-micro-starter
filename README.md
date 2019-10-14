@@ -1,4 +1,4 @@
-# mushop
+# vue-micro-starter
 
 ### Setup
 ```
